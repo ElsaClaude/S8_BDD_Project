@@ -5,6 +5,12 @@ use DBI;
 
 my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cochon04111997",{'RaiseError' => 1});
 
+## SUPPRESSION AUTOMATIQUE DES TABLES - pour permettre de les modifier après-coup
+$dbh->do("drop table Caractéristiques_générales_UniProt cascade");
+$dbh->do("drop table Informations_Protéines_UniProt cascade");
+$dbh->do("drop table Informations_Gènes_UniProt cascade");
+$dbh->do("drop table Réactions_EnsemblePlantes cascade");
+
 ## CREATION DES TABLES
 
 # création de la table Caractéristiques Générales UniProt
@@ -32,13 +38,12 @@ $dbh->do("create table Informations_Gènes_UniProt (
     GeneOntology varchar(1000)
 )");
 
-#création de la table EnsemblePlantes
-$dbh->do("create table EnsemblePlantes(
+#création de la table Réactions_EnsemblePlantes
+$dbh->do("create table Réactions_EnsemblePlantes(
     Gene_Stable_ID varchar(10) constraint syntaxe_Gene_ID CHECK(SUBSTR(Gene_Stable_ID,1,2)='AT'),
     Transcript_stable_ID varchar(12) constraint syntaxe_Transcript_ID CHECK(SUBSTR(Transcript_stable_ID,1,2)='AT') references Caractéristiques_générales_UniProt(EnsemblePlantTranscript),
-    UniProtKB_TrEMBL_ID varchar(15) constraint uniprot_trembl references Caractéristiques_générales_UniProt(Entry),
-    Plant_Reactome_Reaction_ID varchar(15) constraint syntaxe_Reactome_ID CHECK(SUBSTR(Plant_Reactome_Reaction_ID,1,6)='R-ATH-'),
-    primary key (Transcript_stable_ID,UniProtKB_TrEMBL_ID))"
+    UniProtKB_TrEMBL_ID varchar(15) constraint uniprot_trembl references Caractéristiques_générales_UniProt(Entry) primary key,
+    Plant_Reactome_Reaction_ID varchar(15) constraint syntaxe_Reactome_ID CHECK(SUBSTR(Plant_Reactome_Reaction_ID,1,6)='R-ATH-'))"
 );
 
 $dbh->disconnect();
