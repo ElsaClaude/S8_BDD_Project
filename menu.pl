@@ -9,7 +9,7 @@ my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cocho
 # ajouter une protéine 
 sub insert_protein() {
   my @protein;
-  my @ecran=("Veuillez entrez : \n Entry","Entry Name","Status (reviewed ou unreviewed)","Organisme","EnsemblePlantTranscript","ProteinNames","Length","Sequence"); ## <=  toutes les caractéristiques à demander à l'utilisateur pour remplir la table générale et la table protéine
+  my @ecran=("Veuillez entrez : \n Entry","Entry Name","Status (reviewed ou unreviewed)","Organisme","EnsemblePlantTranscript","ProteinNames","Length","Sequence"); 
   for my $e (@ecran) {
       print "$e : ";
       my $usr=<STDIN>;
@@ -17,8 +17,7 @@ sub insert_protein() {
       push(@protein,$usr);
     }
   my $insert_general = $dbh->do("INSERT INTO Caracteristiques_generales_UniProt VALUES ('$protein[0]','$protein[1]','$protein[2]','$protein[3]','$protein[4]')");
-  my $insert_protein = $dbh->do("insert into Informations_Proteines_UniProt values('$protein[0]','$protein[5]','$protein[6]','$protein[7]')"); # remplacer avec les bons éléments de @protéine
-  ## faire 2e requête pour remplir la table générale avec les bons éléments de @protein
+  my $insert_protein = $dbh->do("insert into Informations_Proteines_UniProt values('$protein[0]','$protein[5]','$protein[6]','$protein[7]')");
 }
 
 # corriger une séquence 
@@ -95,7 +94,7 @@ sub main() {
     print "Bienvenu(e) ! Que voulez vous faire ?\n1 - Ajouter une protéine\n2 - Corriger une séquence\n3 - Afficher le nom (UniProt ID) des protéines référencées dans le fichier EnsemblPlant\n4 - Afficher le nom des gènes du fichier UniProt qui sont également référencés dans le fichier EnsemblPlant\n5 - Afficher les protéines ayant une longueur au moins égale à une valeur donnée\n6 - Afficher les caractéristiques des protéines correspondant à un EC number donné\n0 - Quitter le programme\nVotre choix : ";
     my $answer=<STDIN>;
     chomp($answer);
-    while ($answer ne 0) {  # switch ?
+    while ($answer ne 0) {  
         switch($answer) {
             case 1 {
                 insert_protein();
@@ -128,11 +127,3 @@ sub main() {
 main();
 
 $dbh->disconnect(); 
-
-# my $req1 = $dbh->prepare("select Superficie from Appart") or die $dbh->errstr();
-# $req1->execute() or die $req1->errstr();
-
-# while (my @t = $req1->fetchrow_array()) {
-#     print join(" ",@t),"\n";
-# }
-# $req1->finish;
