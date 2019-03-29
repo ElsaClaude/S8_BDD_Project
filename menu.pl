@@ -31,11 +31,29 @@ sub main() {
     print "Bienvenu(e) ! Que voulez vous faire ?\n1 - Ajouter une protéine\n2 - Corriger une séquence\n3 - Afficher le nom (UniProt ID) des protéines référencées dans le fichier EnsemblPlant\n4 - Afficher le nom des gènes du fichier UniProt qui sont également référencés dans le fichier EnemblPlant\n5 - Afficher les protéines ayant une longueur au moins égale à une valeur donnée\n6 - Afficher les caractéristiques des protéines correspondant à un EC number donné\n0 - Quitter le programme\nVotre choix : ";
     my $answer=<STDIN>;
     chomp($answer);
-    while ($answer != 0) {  # switch ?
-        if ($answer == 1 || $answer == 2 || $answer == 3 || $answer == 4 || $answer == 5 || $answer == 6) {
-            print "Cette option n'est pas encore implémenté.\n";
-        } else {
-            print "Désolé, ceci n'est pas une option disponible.\n"
+    while ($answer ne 0) {  # switch ?
+        switch($answer) {
+            case 1 {
+                print "Cette option n'est pas encore implémenté.\n";
+            }
+            case 2 {
+                print "Cette option n'est pas encore implémenté.\n";
+            }
+            case 3 {
+                print "Cette option n'est pas encore implémenté.\n";
+            }
+            case 4 {
+                print "Cette option n'est pas encore implémenté.\n";
+            }
+            case 5 {
+                print "Cette option n'est pas encore implémenté.\n";
+            }
+            case 6 {
+                print "Cette option n'est pas encore implémenté.\n";
+            }
+            else {
+                print "Désolé, ceci n'est pas une option disponible.\n";
+            }
         }
         print "Votre choix : ";
         $answer=<STDIN>;
