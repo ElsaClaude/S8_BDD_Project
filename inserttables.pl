@@ -16,12 +16,12 @@ open(UniProt,"uniprot-arabidopsisthalianaSequence.tab");
 $i=0;
 while(<UniProt>){
   chomp;
-  $_=~s/ /_/g;
-  $_=~s/\./_/g;
-  $_=~s/;/-/g;
+  # $_=~s/ /_/g;
+  # $_=~s/\./_/g;
+  # $_=~s/;/-/g;
   $_=~s/'/`/g;
   @UPsplit=split(/\t/,$_);
-  if (($i != 0) && ($UPsplit[5]=~/Arabidopsis_thaliana/)){
+  if (($i != 0) && ($UPsplit[5]=~/Arabidopsis thaliana/)){
     my $caracteristiques=$dbh->do("INSERT INTO Caracteristiques_generales_UniProt VALUES ('$UPsplit[0]','$UPsplit[1]','$UPsplit[2]','$UPsplit[5]','$UPsplit[9]')");
     my $prot=$dbh->do("INSERT INTO Informations_Proteines_UniProt VALUES('$UPsplit[0]','$UPsplit[3]','$UPsplit[6]','$UPsplit[10]')");
     my $gene=$dbh->do("INSERT INTO Informations_Genes_UniProt VALUES('$UPsplit[0]','$UPsplit[4]','$UPsplit[7]','$UPsplit[8]')");
