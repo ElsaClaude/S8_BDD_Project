@@ -15,8 +15,8 @@ sub insert_protein() {
       chomp($usr);
       push(@protein,$usr);
     }
-  my $insert_general = $dbh->do("INSERT INTO Caractéristiques_générales_UniProt VALUES ('$protein[0]','$protein[1]','$protein[2]','$protein[3]','$protein[4]')");
-  my $insert_protein = $dbh->do("insert into Informations_Protéines_UniProt values('$protein[0]','$protein[5]','$protein[6]','$protein[7]')"); # remplacer avec les bons éléments de @protéine
+  my $insert_general = $dbh->do("INSERT INTO Caracteristiques_generales_UniProt VALUES ('$protein[0]','$protein[1]','$protein[2]','$protein[3]','$protein[4]')");
+  my $insert_protein = $dbh->do("insert into Informations_Proteines_UniProt values('$protein[0]','$protein[5]','$protein[6]','$protein[7]')"); # remplacer avec les bons éléments de @protéine
   ## faire 2e requête pour remplir la table générale avec les bons éléments de @protein
 }
 

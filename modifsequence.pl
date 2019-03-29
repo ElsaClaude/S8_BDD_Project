@@ -13,7 +13,7 @@ sub modif_sequence(){
   print("Entrez maintenant la séquence complète corrigée :");
   my $seq = <STDIN>;
   chomp($seq);
-  my $modif_sequence = $dbh->do("UPDATE Informations_Protéines_UniProt SET Sequence = '$seq' WHERE Entry = '$prot'");
+  my $modif_sequence = $dbh->do("UPDATE Informations_Proteines_UniProt SET Sequence = '$seq' WHERE Entry = '$prot'");
 }
 
 modif_sequence();
