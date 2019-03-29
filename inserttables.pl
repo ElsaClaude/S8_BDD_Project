@@ -22,9 +22,9 @@ while(<UniProt>){
   $_=~s/'/`/g;
   @UPsplit=split(/\t/,$_);
   if (($i != 0) && ($UPsplit[5]=~/Arabidopsis_thaliana/)){
-    my $caracteristiques=$dbh->do("INSERT INTO Caractéristiques_générales_UniProt VALUES ('$UPsplit[0]','$UPsplit[1]','$UPsplit[2]','$UPsplit[5]','$UPsplit[9]')");
-    my $prot=$dbh->do("INSERT INTO Informations_Protéines_UniProt VALUES('$UPsplit[0]','$UPsplit[3]','$UPsplit[6]','$UPsplit[10]')");
-    my $gene=$dbh->do("INSERT INTO Informations_Gènes_UniProt VALUES('$UPsplit[0]','$UPsplit[4]','$UPsplit[7]','$UPsplit[8]')");
+    my $caracteristiques=$dbh->do("INSERT INTO Caracteristiques_generales_UniProt VALUES ('$UPsplit[0]','$UPsplit[1]','$UPsplit[2]','$UPsplit[5]','$UPsplit[9]')");
+    my $prot=$dbh->do("INSERT INTO Informations_Proteines_UniProt VALUES('$UPsplit[0]','$UPsplit[3]','$UPsplit[6]','$UPsplit[10]')");
+    my $gene=$dbh->do("INSERT INTO Informations_Genes_UniProt VALUES('$UPsplit[0]','$UPsplit[4]','$UPsplit[7]','$UPsplit[8]')");
     push(@testUniProt,$UPsplit[0]);
   }
   $i++;
@@ -46,7 +46,7 @@ while(<REAC>) {
   }
   if (($check==1) && ($i != 1) && (join(" ",@testEnsemblePlant) !~ /$REACsplit[2]/) && (join(" ",@testUniProt) =~ /$REACsplit[2]/)) {
     push(@testEnsemblePlant,$REACsplit[2]);
-    my $reactions=$dbh->do("INSERT INTO Réactions_EnsemblePlantes VALUES ('$REACsplit[0]','$REACsplit[1]','$REACsplit[2]','$REACsplit[3]')");
+    my $reactions=$dbh->do("INSERT INTO Reactions_EnsemblePlantes VALUES ('$REACsplit[0]','$REACsplit[1]','$REACsplit[2]','$REACsplit[3]')");
   }
   $i++;
 }
