@@ -23,8 +23,7 @@ sub insert_protein() {
 }
 
 # menu
-sub menu() {
-    
+sub menu() {  
 }
 
 ### MAIN ###
@@ -38,11 +37,13 @@ sub main() {
         } else {
             print "Désolé, ceci n'est pas une option disponible.\n"
         }
-        print "Bienvenu(e) ! Que voulez vous faire ?\n1 - Ajouter une protéine\n2 - Corriger une séquence\n3 - Afficher le nom (UniProt ID) des protéines référencées dans le fichier EnsemblPlant\n4 - Afficher le nom des gènes du fichier UniProt qui sont également référencés dans le fichier EnemblPlant\n5 - Afficher les protéines ayant une longueur au moins égale à une valeur donnée\n6 - Afficher les caractéristiques des protéines correspondant à un EC number donné\n0 - Quitter le programme\nVotre choix : ";
+        print "Votre choix : ";
         $answer=<STDIN>;
         chomp($answer);
     }
 }
+
+main();
 
 $dbh->disconnect(); 
 
