@@ -15,12 +15,22 @@ sub insert_protein() {
         my $usr=<STDIN>;
         chomp($usr);
         push(@protein,$usr);
-    my $req_insert_protein = $dbh->prepare("insert into Informations_Protéines_UniProt values('$protein[0]','$protein[1]','$protein[2]','$protein[3]')") or die $dbh->errstr(); # remplacer avec les bons éléments de @protéine
-    $req_insert_protein->execute() or die $req_insert_protein->errstr();
-    $req_insert_protein->finish;
     ## faire 2e requête pour remplir la table générale avec les bons éléments de @protein
     }
 }
+
+# afficher le nom des protéines référencées dans le fichier EnsemblPlant
+sub get_protein_EnsemblPlant() {
+    my $req_protein_EnsemblPlant = $dbh->prepare("SELECT entry FROM 'Caractéristiques_générales_UniProt'") or die $dbh->errstr();
+    $req_protein_EnsemblPlant->execute() or die $req_protein_EnsemblPlant->errstr();
+    my $i=1;
+    while (my @prot = $req_protein_EnsemblPlant->fetchrow_array()) {
+        print $i," - ",join(" ",@prot),"\n";
+        $i++;
+    }
+    $req_protein_EnsemblPlant->finish;
+}
+
 
 # menu
 sub menu() {  
@@ -40,7 +50,7 @@ sub main() {
                 print "Cette option n'est pas encore implémenté.\n";
             }
             case 3 {
-                print "Cette option n'est pas encore implémenté.\n";
+                get_protein_EnsemblPlant();
             }
             case 4 {
                 print "Cette option n'est pas encore implémenté.\n";
