@@ -16,7 +16,7 @@ my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cocho
 # ajouter une protéine
 sub insert_protein() {
   my @protein;
-  my @ecran=("Veuillez entrez : \n Entry","Entry Name","Status (reviewed ou unreviewed)","Organisme","EnsemblPlantsTranscript","ProteinNames","Length","Sequence");
+  my @ecran=("Veuillez entrer : \n Entry","Entry Name","Status (reviewed ou unreviewed)","Organisme","EnsemblPlantsTranscript","ProteinNames","Length","Sequence");
   for my $e (@ecran) {
       print "$e : ";
       my $usr=<STDIN>;
@@ -29,7 +29,7 @@ sub insert_protein() {
 
 # corriger une séquence
 sub modif_sequence(){
-  print("Veuillez entrez le nom \"Entry\" de la protéine dont vous souhaitez modifier la séquence :\n");
+  print("Veuillez entrer le nom \"Entry\" de la protéine dont vous souhaitez modifier la séquence :\n");
   my $prot = <STDIN>;
   chomp($prot);
   print("Entrez maintenant la séquence complète corrigée :");
