@@ -17,7 +17,7 @@ open(UniProt,"uniprot-arabidopsisthalianaSequence.tab");
 while(<UniProt>) {
     chomp;
     @UPsplit=split(/\t/,$_);
-    if ($UPsplit[6] >= $usr) {
+    if (($UPsplit[6] >= $usr) && ($UPsplit[5]=~/Arabidopsis thaliana/)) {
         print $i," - ",join(" ",@UPsplit),"\n";
         $i++;
     }
