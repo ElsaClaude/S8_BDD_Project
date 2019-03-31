@@ -11,10 +11,10 @@ use DBI;
 my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cochon04111997",{'RaiseError' => 1});
 
 ## SUPPRESSION AUTOMATIQUE DES TABLES - pour permettre de les modifier apres-coup
-$dbh->do("drop table Caracteristiques_generales_UniProt cascade");
-$dbh->do("drop table Informations_Proteines_UniProt cascade");
-$dbh->do("drop table Informations_Genes_UniProt cascade");
-$dbh->do("drop table Reactions_EnsemblePlantes cascade");
+# $dbh->do("drop table Caracteristiques_generales_UniProt cascade");
+# $dbh->do("drop table Informations_Proteines_UniProt cascade");
+# $dbh->do("drop table Informations_Genes_UniProt cascade");
+# $dbh->do("drop table Reactions_EnsemblePlantes cascade");
 
 ## CREATION DES TABLES
 
