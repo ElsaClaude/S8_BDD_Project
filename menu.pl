@@ -67,7 +67,7 @@ sub get_gene_UniProtANDEnsemblPlant() {
 }
 
 #  afficher les protéines ayant une longueur au moins égale à une valeur donnée
-sub req_longueur(){
+sub get_longueur(){
   my @matrix;
   print("Entrez une longueur de séquence protéique (en pb) pour obtenir la liste des proteines ayant une séquence d'une longueur au moins égale.\n");
   my $size = <STDIN>;
@@ -161,7 +161,7 @@ sub main() {
             menu();
         }
         case 5 {
-            req_longueur();
+            get_longueur();
             menu();
         }
         case 6 {
