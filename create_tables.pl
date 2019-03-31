@@ -20,27 +20,30 @@ my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cocho
 
 # création de la table Caracteristiques Generales UniProt
 $dbh->do("create table Caracteristiques_generales_UniProt (
-    Entry varchar(50) constraint entree primary key,
+    Entry varchar(50) constraint entree unique,
     EntryName varchar(50),
     Status varchar(50) constraint etat check (Status in ('reviewed','unreviewed')),
     Organism varchar(50),
-    EnsemblPlantsTranscript text
+    EnsemblPlantsTranscript text,
+    primary key (Entry,EntryName)
 )");
 
 # creation de la table Informations Proteines UniProt
 $dbh->do("create table Informations_Proteines_UniProt (
-    Entry varchar(50) constraint entree_proteines primary key references Caracteristiques_generales_UniProt(Entry),
+    Entry varchar(50) constraint entree_proteines references Caracteristiques_generales_UniProt(Entry),
     ProteinNames text,
     Length int constraint longueur check (Length > 0),
-    Sequence text
+    Sequence text,
+    primary key (Entry,ProteinNames,Sequence)
 )");
 
 # création de la table Informations Genes UniProt
 $dbh->do("create table Informations_Genes_UniProt (
-    Entry varchar(50) constraint entree_genes primary key references Caracteristiques_generales_UniProt(Entry),
+    Entry varchar(50) constraint entree_genes references Caracteristiques_generales_UniProt(Entry),
     GeneName text,
     SynonymGeneName text,
-    GeneOntology text
+    GeneOntology text,
+    primary key (Entry,GeneName)
 )");
 
 #création de la table Reactions_EnsemblPlants
