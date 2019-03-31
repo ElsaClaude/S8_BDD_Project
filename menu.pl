@@ -1,3 +1,10 @@
+# Projet Base de Données
+# fichier menu 
+# groupe : Elsa Claude - Amelie Gruel
+# 03 avril 2019
+
+# Attention à ce que le module "Switch" soit bien installé
+
 #!bin/perl
 use warnings;
 use strict;

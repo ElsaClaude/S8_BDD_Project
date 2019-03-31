@@ -1,3 +1,8 @@
+# Projet Base de Données
+# fichier Insert Tables : insérer le contenu dans les tables créées à l'aide de tables_projet.pl 
+# groupe : Elsa Claude - Amelie Gruel
+# 03 avril 2019
+
 #!bin/perl
 use warnings;
 use strict;

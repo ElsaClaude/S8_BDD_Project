@@ -1,3 +1,8 @@
+# Projet Base de Données
+# fichier Création des tables  
+# groupe : Elsa Claude - Amelie Gruel
+# 03 avril 2019
+
 #!bin/perl
 use warnings;
 use strict;

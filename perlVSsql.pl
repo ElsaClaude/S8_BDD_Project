@@ -1,3 +1,8 @@
+# Projet Base de Données
+# fichier Perl VS SQL : permet de comparer la vitesse d'exécution d'une commande en passant par SQL ou Perl 
+# groupe : Elsa Claude - Amelie Gruel
+# 03 avril 2019
+
 #!bin/perl
 use warnings;
 use strict;
