@@ -16,7 +16,7 @@ my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cocho
 # ajouter une protéine
 sub insert_protein() {
   my @protein;
-  my @ecran=("Veuillez entrez : \n Entry","Entry Name","Status (reviewed ou unreviewed)","Organisme","EnsemblePlantTranscript","ProteinNames","Length","Sequence");
+  my @ecran=("Veuillez entrez : \n Entry","Entry Name","Status (reviewed ou unreviewed)","Organisme","EnsemblPlantsTranscript","ProteinNames","Length","Sequence");
   for my $e (@ecran) {
       print "$e : ";
       my $usr=<STDIN>;
@@ -40,7 +40,7 @@ sub modif_sequence(){
 
 # afficher le nom des protéines référencées dans le fichier EnsemblPlant
 sub get_protein_EnsemblPlant() {
-    my $req_protein_EnsemblPlant = $dbh->prepare("SELECT UniProtKB_TrEMBL_ID FROM Reactions_EnsemblePlantes") or die $dbh->errstr();
+    my $req_protein_EnsemblPlant = $dbh->prepare("SELECT UniProtKB_TrEMBL_ID FROM Reactions_EnsemblPlants") or die $dbh->errstr();
     $req_protein_EnsemblPlant->execute() or die $req_protein_EnsemblPlant->errstr();
     my $i=1;
     while (my @prot = $req_protein_EnsemblPlant->fetchrow_array()) {
@@ -53,7 +53,7 @@ sub get_protein_EnsemblPlant() {
 # afficher le nom des gènes du fichier UniProt également référencés dans le fichier EnsemblPlant
 sub get_gene_UniProtANDEnsemblPlant() {
     my @matrix;
-    my $req_gene = $dbh->prepare("select GeneName from Informations_Genes_Uniprot G join Reactions_EnsemblePlantes E on G.Entry = E.UniProtKB_TrEMBL_ID") or die $dbh->errstr();
+    my $req_gene = $dbh->prepare("select GeneName from Informations_Genes_Uniprot G join Reactions_EnsemblPlants E on G.Entry = E.UniProtKB_TrEMBL_ID") or die $dbh->errstr();
     $req_gene->execute() or die $req_gene->errstr();
     my $i=1;
     while (my @gene = $req_gene->fetchrow_array()) {

@@ -41,7 +41,7 @@ open(REAC,"mart_export.csv");
 $i=1;
 while(<REAC>) {
   chomp;
-  $_=~s/\./_/g;
+  # $_=~s/\./_/g;
   @REACsplit=split(/,/,$_);
   $check=1;
   if (not (defined($REACsplit[2])) || ($REACsplit[2]=~/^s*$/)){

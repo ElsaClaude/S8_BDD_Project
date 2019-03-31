@@ -14,7 +14,7 @@ my $dbh = DBI->connect("DBI:Pg:dbname=elclaude;host=dbserver","elclaude","*Cocho
 # $dbh->do("drop table Caracteristiques_generales_UniProt cascade");
 # $dbh->do("drop table Informations_Proteines_UniProt cascade");
 # $dbh->do("drop table Informations_Genes_UniProt cascade");
-# $dbh->do("drop table Reactions_EnsemblePlantes cascade");
+# $dbh->do("drop table Reactions_EnsemblPlants cascade");
 
 ## CREATION DES TABLES
 
@@ -24,7 +24,7 @@ $dbh->do("create table Caracteristiques_generales_UniProt (
     EntryName varchar(50),
     Status varchar(50) constraint etat check (Status in ('reviewed','unreviewed')),
     Organism varchar(50),
-    EnsemblePlantTranscript text
+    EnsemblPlantsTranscript text
 )");
 
 # creation de la table Informations Proteines UniProt
@@ -43,8 +43,8 @@ $dbh->do("create table Informations_Genes_UniProt (
     GeneOntology text
 )");
 
-#création de la table Reactions_EnsemblePlantes
-$dbh->do("create table Reactions_EnsemblePlantes(
+#création de la table Reactions_EnsemblPlants
+$dbh->do("create table Reactions_EnsemblPlants(
     Gene_Stable_ID varchar(50) constraint syntaxe_Gene_ID CHECK(SUBSTR(Gene_Stable_ID,1,2)='AT'),
     Transcript_stable_ID varchar(50) constraint syntaxe_Transcript_ID CHECK(SUBSTR(Transcript_stable_ID,1,2)='AT'),
     UniProtKB_TrEMBL_ID varchar(50) constraint uniprot_trembl primary key references Caracteristiques_generales_UniProt(Entry),
