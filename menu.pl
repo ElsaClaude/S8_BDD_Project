@@ -23,9 +23,13 @@ sub insert_protein() {
       chomp($usr);
       push(@protein,$usr);
     }
-  my $insert_general = $dbh->do("INSERT INTO Caracteristiques_generales_UniProt VALUES ('$protein[0]','$protein[1]','$protein[2]','$protein[5]','$protein[9]')");
-  my $insert_protein = $dbh->do("INSERT INTO Informations_Proteines_UniProt VALUES('$protein[0]','$protein[3]','$protein[6]','$protein[10]')");
-  my $insert_gene = $dbh->do("INSERT INTO Informations_Genes_UniProt VALUES('$protein[0]','$protein[4]','$protein[7]','$protein[8]')");
+  if (check_protein($protein[0]) >= 10) {
+    print "\nErreur : cette protéine existe déjà dans la base de données. Cette opération est donc impossible.\n"
+  } else {
+    my $insert_general = $dbh->do("INSERT INTO Caracteristiques_generales_UniProt VALUES ('$protein[0]','$protein[1]','$protein[2]','$protein[5]','$protein[9]')");
+    my $insert_protein = $dbh->do("INSERT INTO Informations_Proteines_UniProt VALUES('$protein[0]','$protein[3]','$protein[6]','$protein[10]')");
+    my $insert_gene = $dbh->do("INSERT INTO Informations_Genes_UniProt VALUES('$protein[0]','$protein[4]','$protein[7]','$protein[8]')");
+  }
 }
 
 # corriger une séquence
@@ -33,10 +37,14 @@ sub modif_sequence(){
   print("Veuillez entrer le nom \"Entry\" de la protéine dont vous souhaitez modifier la séquence :\n");
   my $prot = <STDIN>;
   chomp($prot);
-  print("Entrez maintenant la séquence complète corrigée :");
-  my $seq = <STDIN>;
-  chomp($seq);
-  my $modif_sequence = $dbh->do("UPDATE Informations_Proteines_UniProt SET Sequence = '$seq' WHERE Entry = '$prot'");
+  if (check_protein($prot) < 10) {
+    print "\nErreur : cette protéine n'existe pas dans la base de données. Veuillez entrer un autre \"Entry\".\n";
+  } else {
+    print("Entrez maintenant la séquence complète corrigée :");
+    my $seq = <STDIN>;
+    chomp($seq);
+    my $modif_sequence = $dbh->do("UPDATE Informations_Proteines_UniProt SET Sequence = '$seq' WHERE Entry = '$prot'");
+  }
 }
 
 # supprimer une protéine provenant d'EnsemblPlants
@@ -44,21 +52,71 @@ sub delete_protein_EnsemblPlants() {
   print("Veuillez entrer le nom \"Entry\" de la protéine que vous voulez supprimer dans les données provenant d'EnsemblPlants :\n");
   my $usr = <STDIN>;
   chomp($usr);
-  my $delete = $dbh->do("delete from Reactions_EnsemblPlants where UniProtKB_TrEMBL_ID in (select Entry from Caracteristiques_generales_UniProt where Entry='$usr')");
-  print "Suppression faite.\n";
+  if (check_protein($usr) != 1 || check_protein($usr) != 11) {
+    print "\nErreur : cette protéine n'existe pas dans la base de données EnsemblPlants. Veuillez entrer un autre \"Entry\".\n";
+  } else {
+    my $delete = $dbh->do("delete from Reactions_EnsemblPlants where UniProtKB_TrEMBL_ID in (select Entry from Caracteristiques_generales_UniProt where Entry='$usr')");
+    print "\nSuppression faite.\n";
+  }
 }
 
 # supprimer une protéine provenant d'UniProt
 sub delete_protein_UniProt() {
   print("Veuillez entrer le nom \"Entry\" de la protéine que vous voulez supprimer dans les données provenant d'EnsemblPlants :\n");
   my $usr = <STDIN>;
-  my $req = $dbh->prepare("select UniProtKB_TrEMBL_ID FROM Reactions_EnsemblPlants E join Caracteristiques_generales_UniProt U on E.UniProtKB_TrEMBL_ID=U.Entry where U.Entry='$usr'") or die $dbh->errstr();
-  $req->execute() or die $req->errstr();
-  my @tmp = $req->fetchrow_array();
-  my $delete_protein = $dbh->do("delete from Informations_Proteines_UniProt where Entry='$usr'");
-  my $delete_gene = $dbh->do("delete from Informations_Proteines_UniProt where Entry='$usr'");
-  my $delete_general = $dbh->do("delete from Caracteristiques_generales_UniProt where Entry='$usr'");
-  print "Suppression faite.\n";
+  chomp($usr);
+  if (check_protein($usr) < 10) {
+    print "\nErreur : cette protéine n'existe pas dans la base de données UniProt. Veuillez entrer un autre \"Entry\".\n";
+  } else {
+    my $delete_protein = $dbh->do("delete from Informations_Proteines_UniProt where Entry='$usr'");
+    my $delete_gene = $dbh->do("delete from Informations_Proteines_UniProt where Entry='$usr'");
+    my $delete_general = $dbh->do("delete from Caracteristiques_generales_UniProt where Entry='$usr'");
+    print "\nSuppression faite.\n";
+  }
+}
+
+# vérifier la présence de la protéine dans les tables UniProt et EnsemblPlants (affiche à l'utilisateur si la protéine est présente ou non)
+sub display_check_protein() {
+  print "Veuillez entrer le nom \"Entry\" de la protéine dont vous voulez vérifier la présence :\n";
+  my $entry = <STDIN>;
+  chomp($entry);
+  my $check = check_protein($entry);
+  if ($check == 1 || $check == 11) {
+    print "=> présente dans la table EnsemblPlants\n";
+  }
+  if ($check == 10 || $check == 11) {
+    print "=> présente dans les tables UniProt\n";
+  }
+  if ($check == 0) {
+    print "=> absente dans les deux tables\n";
+  }
+}
+
+# vérifier la présence de la protéine dans les tables UniProt et EnsemblPlants (retourne une valeur utilisée pour gérer les erreurs dans d'autres fonctions)
+sub check_protein() {
+  my $usr = shift;
+  my $check=0;
+  # vérification dans EnsemblPlants
+  my $check1=0;
+  my $req_check_EnsemblPlants = $dbh->prepare("select UniProtKB_TrEMBL_ID from Reactions_EnsemblPlants where UniProtKB_TrEMBL_ID = '$usr'") or die $dbh->errstr();
+  $req_check_EnsemblPlants->execute() or die $req_check_EnsemblPlants->errstr();
+  while (my @tmp = $req_check_EnsemblPlants->fetchrow_array()) {
+    $check1=1;
+  }
+  if ($check1==1) {
+    $check+=1;
+  }
+  # vérification dans UniProt
+  my $check2=0;
+  my $req_check_UniProt = $dbh->prepare("select Entry from Caracteristiques_generales_UniProt where Entry = '$usr'") or die $dbh->errstr();
+  $req_check_UniProt->execute() or die $req_check_UniProt->errstr();
+  while (my @tmp = $req_check_UniProt->fetchrow_array()) {
+    $check2=1;
+  }
+  if ($check2==1) {
+    $check+=10;
+  }
+  return $check;  ### si la fonction retourne 1, la protéine est présente dans EnsemblPlants // si la fonction retourne 10, la protéine est présente dans UniProt // si la fonction retourne 11, la protéine est présente dans les 2
 }
 
 # afficher le nom des protéines référencées dans le fichier EnsemblPlant
@@ -134,6 +192,7 @@ sub get_caract_protein() {
   html_page("requete_caracteristiques_proteine",\@matrix,\@headers,"Caractéristiques des protéines ayant comme E.C number : $ECn");
 }
 
+# créer une page html contenant les résultats
 sub html_page(){
   print "\nVoulez-vous enregistrer ces résultats dans un fichier html ?\n0 - Non\n1 - Oui\nVotre choix : ";
   my $usr = <STDIN>;
@@ -165,7 +224,7 @@ sub html_page(){
 }
 
 sub menu(){
-  print "\nQue voulez-vous faire ?\n1 - Ajouter une protéine\n2 - Corriger une séquence\n3 - Supprimer une protéine provenant d'EnsemblPlants\n4 - Supprimer une protéine provenant d'UniProt\n5 - Afficher le nom (UniProt ID) des protéines référencées dans le fichier EnsemblPlant\n6 - Afficher le nom des gènes du fichier UniProt qui sont également référencés dans le fichier EnsemblPlant\n7 - Afficher les protéines ayant une longueur au moins égale à une valeur donnée\n8 - Afficher les caractéristiques des protéines correspondant à un EC number donné\n0 - Quitter le programme\n\nVotre choix : ";
+  print "\nQue voulez-vous faire ?\n1 - Ajouter une protéine\n2 - Corriger une séquence\n3 - Supprimer une protéine provenant d'EnsemblPlants\n4 - Vérifier la présence d'une protéine dans les tables EnsemblPlants et UniProt\n5 - Supprimer une protéine provenant d'UniProt\n6 - Afficher le nom (UniProt ID) des protéines référencées dans le fichier EnsemblPlant\n7 - Afficher le nom des gènes du fichier UniProt qui sont également référencés dans le fichier EnsemblPlant\n8 - Afficher les protéines ayant une longueur au moins égale à une valeur donnée\n9 - Afficher les caractéristiques des protéines correspondant à un EC number donné\n0 - Quitter le programme\n\nVotre choix : ";
 }
 
 ### MAIN ###
@@ -186,18 +245,21 @@ sub main() {
           delete_protein_EnsemblPlants();
         }
         case 4 {
-          delete_protein_UniProt();
+          display_check_protein();
         }
         case 5 {
-            get_protein_EnsemblPlant();
+          delete_protein_UniProt();
         }
         case 6 {
-            get_gene_UniProtANDEnsemblPlant();
+            get_protein_EnsemblPlant();
         }
         case 7 {
-            get_longueur();
+            get_gene_UniProtANDEnsemblPlant();
         }
         case 8 {
+            get_longueur();
+        }
+        case 9 {
             get_caract_protein();
         }
         else {
